@@ -1,66 +1,29 @@
-// src/App.tsx
+// src/react-app/App.tsx
 
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
-import honoLogo from "./assets/hono.svg";
-import "./App.css";
+// We will import these later once we set up the store and theme
+// import { Provider } from "react-redux";
+// import { ThemeProvider, CssBaseline } from "@mui/material";
+// import { store } from "./app/store";
+// import { theme } from "./theme/theme";
 
 function App() {
-	const [count, setCount] = useState(0);
-	const [name, setName] = useState("unknown");
-
-	return (
-		<>
-			<div>
-				<a href="https://vite.dev" target="_blank">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-				<a href="https://hono.dev/" target="_blank">
-					<img src={honoLogo} className="logo cloudflare" alt="Hono logo" />
-				</a>
-				<a href="https://workers.cloudflare.com/" target="_blank">
-					<img
-						src={cloudflareLogo}
-						className="logo cloudflare"
-						alt="Cloudflare logo"
-					/>
-				</a>
-			</div>
-			<h1>Vite + React + Hono + Cloudflare</h1>
-			<div className="card">
-				<button
-					onClick={() => setCount((count) => count + 1)}
-					aria-label="increment"
-				>
-					count is {count}
-				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<div className="card">
-				<button
-					onClick={() => {
-						fetch("/api/")
-							.then((res) => res.json() as Promise<{ name: string }>)
-							.then((data) => setName(data.name));
-					}}
-					aria-label="get name"
-				>
-					Name from API is: {name}
-				</button>
-				<p>
-					Edit <code>worker/index.ts</code> to change the name
-				</p>
-			</div>
-			<p className="read-the-docs">Click on the logos to learn more</p>
-		</>
-	);
+  return (
+    // <Provider store={store}>
+      // <ThemeProvider theme={theme}>
+        // <CssBaseline />
+        <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+          <h1>Lunar Calendar Platform</h1>
+          <p>MUI + Redux + Lunar Engine skeleton is ready.</p>
+          
+          {/* Example of how you'll call your Hono backend later in Phase 5 */}
+          {/* <button onClick={() => fetch("/api/").then(res => res.json()).then(console.log)}>
+            Test Hono API
+          </button> 
+          */}
+        </div>
+      // </ThemeProvider>
+    // </Provider>
+  );
 }
 
 export default App;
