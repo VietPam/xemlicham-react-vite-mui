@@ -8,6 +8,9 @@ import { Sidebar } from "@/components/Sidebar";
 import { TopBar } from "@/components/TopBar"; // <-- Import the new TopBar
 import { CalendarTable } from "@/features/calendar/components/CalendarTable";
 import { SearchDateDialog } from "@/features/calendar/components/SearchDateDialog";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { EventsPage } from "@/pages/EventsPage";
+import { SettingsPage } from "@/pages/SettingsPage";
 const drawerWidth = 260;
 
 function App() {
@@ -21,23 +24,34 @@ function App() {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f7fa" }}>
-          
-          <TopBar drawerWidth={drawerWidth} handleDrawerToggle={handleDrawerToggle} />
-          <Sidebar drawerWidth={drawerWidth} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
-          
-          <Box component="main" sx={{ flexGrow: 1, p: { xs: 0, sm: 3 }, width: { sm: `calc(100% - ${drawerWidth}px)` }, height: "100vh", overflow: "auto" }}>
-            <Toolbar /> 
-            <Container disableGutters={true} maxWidth="lg" sx={{ pt: { xs: 1, sm: 2 } }}> 
-              <CalendarTable />
-            </Container>
+        {/* 2. Wrap everything inside the Router */}
+        <Router>
+          <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
+            
+            <TopBar drawerWidth={drawerWidth} handleDrawerToggle={handleDrawerToggle} />
+            <Sidebar drawerWidth={drawerWidth} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
+            
+            <Box component="main" sx={{ flexGrow: 1, p: { xs: 0, sm: 3 }, width: { sm: `calc(100% - ${drawerWidth}px)` }, height: "100vh", overflow: "auto" }}>
+              <Toolbar /> 
+              
+              {/* 3. Replace the hardcoded CalendarTable with Routes */}
+              <Routes>
+                {/* Home Route: The Calendar */}
+                <Route path="/" element={
+                  <Container disableGutters={true} maxWidth="lg" sx={{ pt: { xs: 1, sm: 2 } }}> 
+                    <CalendarTable />
+                  </Container>
+                } />
+                
+                {/* New Routes */}
+                <Route path="/events" element={<EventsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+              </Routes>
+
+            </Box>
           </Box>
-
-        </Box>
-
-        {/* Add the global dialog here! */}
-        <SearchDateDialog />
-
+          <SearchDateDialog />
+        </Router>
       </ThemeProvider>
     </Provider>
   );

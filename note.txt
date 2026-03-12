@@ -10,3 +10,5 @@ npm install @mui/icons-material
 to Fix Grid V6 MUI error:
 old: <Grid item xs={12 / 7} key={day}>
 new: <Grid size={12 / 7} key={day}>
+
+npm install react-router-dom
