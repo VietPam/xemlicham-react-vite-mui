@@ -2,42 +2,51 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 
 interface CalendarState {
-  month: number; // 1-12
+  month: number;
   year: number;
-  selectedDate: string | null; // ISO string like YYYY-MM-DD
+  selectedDate: string | null;
+  viewMode: "month" | "year"; // <-- Add this
 }
 
 const initialState: CalendarState = {
-  month: dayjs().month() + 1, // dayjs months are 0-indexed (0-11)
+  month: dayjs().month() + 1,
   year: dayjs().year(),
   selectedDate: dayjs().format("YYYY-MM-DD"),
+  viewMode: "month", // <-- Default to month view
 };
 
 export const calendarSlice = createSlice({
   name: "calendar",
   initialState,
   reducers: {
-    nextMonth: (state) => {
-      if (state.month === 12) {
-        state.month = 1;
+    next: (state) => { // Rename to a generic 'next'
+      if (state.viewMode === "year") {
         state.year += 1;
       } else {
-        state.month += 1;
+        if (state.month === 12) { state.month = 1; state.year += 1; } 
+        else { state.month += 1; }
       }
     },
-    prevMonth: (state) => {
-      if (state.month === 1) {
-        state.month = 12;
+    prev: (state) => { // Rename to a generic 'prev'
+      if (state.viewMode === "year") {
         state.year -= 1;
       } else {
-        state.month -= 1;
+        if (state.month === 1) { state.month = 12; state.year -= 1; } 
+        else { state.month -= 1; }
       }
     },
     setSelectedDate: (state, action: PayloadAction<string>) => {
       state.selectedDate = action.payload;
     },
+    setViewMode: (state, action: PayloadAction<"month" | "year">) => {
+      state.viewMode = action.payload;
+    },
+    jumpToMonth: (state, action: PayloadAction<number>) => {
+      state.month = action.payload;
+      state.viewMode = "month"; // Auto-switch back to month view
+    }
   },
 });
 
-export const { nextMonth, prevMonth, setSelectedDate } = calendarSlice.actions;
+export const { next, prev, setSelectedDate, setViewMode, jumpToMonth } = calendarSlice.actions;
 export default calendarSlice.reducer;
