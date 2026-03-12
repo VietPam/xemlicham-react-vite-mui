@@ -1,10 +1,12 @@
+// src/react-app/app/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import calendarReducer from "@/features/calendar/calendarSlice";
+import eventReducer from "@/features/events/eventSlice"; // <-- Add this
 
 export const store = configureStore({
   reducer: {
     calendar: calendarReducer,
-    // eventReducer will go here in Milestone 3
+    events: eventReducer, // <-- Add this
   },
 });
 

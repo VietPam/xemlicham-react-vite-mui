@@ -10,6 +10,7 @@ const DAYS_OF_WEEK = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
 export const CalendarTable = () => {
   const { month, year } = useAppSelector((state) => state.calendar);
+  const { events } = useAppSelector((state) => state.events); // <-- Pull events from Redux
 
   const startOfMonth = dayjs(`${year}-${month}-01`);
   const daysInMonth = startOfMonth.daysInMonth();
@@ -29,14 +30,7 @@ export const CalendarTable = () => {
       <Grid container>
         {DAYS_OF_WEEK.map((day, index) => (
           <Grid size={12 / 7} key={day}>
-            <Box 
-              textAlign="center" 
-              fontWeight="bold" 
-              py={1.5} 
-              bgcolor="#f8f9fa"
-              color={index === 0 ? "primary.main" : "text.secondary"} // Make Sunday Red
-              borderBottom="1px solid #e0e0e0"
-            >
+            <Box textAlign="center" fontWeight="bold" py={1.5} bgcolor="#f8f9fa" color={index === 0 ? "primary.main" : "text.secondary"} borderBottom="1px solid #e0e0e0">
               {day}
             </Box>
           </Grid>
@@ -46,13 +40,18 @@ export const CalendarTable = () => {
       <Grid container>
         {daysArray.map((day, index) => {
           const isToday = day === today.date() && month === today.month() + 1 && year === today.year();
-          
-          // Execute Core Engine Math
           const lunarDate = day ? convertSolarToLunar(day, month, year) : null;
+
+          // Check if any saved events match this specific lunar date
+          const dayEvents = lunarDate ? events.filter(e => 
+            e.lunarDay === lunarDate.day && 
+            e.lunarMonth === lunarDate.month && 
+            (e.repeatYearly || e.lunarYear === lunarDate.year)
+          ) : [];
 
           return (
             <Grid size={12 / 7} key={index}>
-              <CalendarCell day={day} lunarDate={lunarDate} isToday={isToday} />
+              <CalendarCell day={day} lunarDate={lunarDate} isToday={isToday} dayEvents={dayEvents} />
             </Grid>
           );
         })}
