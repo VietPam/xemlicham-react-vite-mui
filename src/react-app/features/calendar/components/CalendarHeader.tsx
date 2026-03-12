@@ -19,22 +19,22 @@ export const CalendarHeader = () => {
 
   return (
     <>
-      {/* 1. Change the Box to flexWrap and adjust flexDirection for mobile */}
       <Box 
         display="flex" 
-        flexDirection={{ xs: "column", sm: "row" }} // Stack vertically on mobile, row on desktop
+        flexDirection={{ xs: "column", sm: "row" }} 
         justifyContent="space-between" 
         alignItems="center" 
-        gap={1.5} // Adds nice spacing when they wrap
+        gap={2} // Slightly more breathing room between the two rows
         mb={2} 
         p={1}
       >
+        {/* ROW 1: Navigation */}
         <Box display="flex" alignItems="center" width={{ xs: "100%", sm: "auto" }} justifyContent="space-between">
           <IconButton onClick={() => dispatch(prev())}>
             <ArrowBackIcon />
           </IconButton>
           
-          <Typography variant="h6" fontWeight="bold" sx={{ mx: 1, textAlign: "center", flexGrow: 1 }}>
+          <Typography variant="h6" fontWeight="bold" sx={{ textAlign: "center", flexGrow: 1 }}>
             {viewMode === "month" ? `Tháng ${month} - ${year}` : `Năm ${year}`}
           </Typography>
 
@@ -43,10 +43,19 @@ export const CalendarHeader = () => {
           </IconButton>
         </Box>
 
-        {/* 2. Group the Actions together so they sit nicely below the title on mobile */}
-        <Box display="flex" alignItems="center" gap={1}>
+        {/* ROW 2: Actions */}
+        <Box 
+          display="flex" 
+          alignItems="center" 
+          width={{ xs: "100%", sm: "auto" }} 
+          justifyContent={{ xs: "space-between", sm: "flex-end" }} // Spreads elements on mobile, pushes to right on desktop
+        >
           <Tooltip title="Đi đến tháng/năm">
-            <IconButton onClick={() => setJumpDialogOpen(true)} color="primary">
+            <IconButton 
+              onClick={() => setJumpDialogOpen(true)} 
+              color="primary"
+              sx={{ bgcolor: "rgba(0, 0, 0, 0.04)" }} // Gives it a soft, button-like background
+            >
               <SearchIcon />
             </IconButton>
           </Tooltip>
@@ -58,12 +67,14 @@ export const CalendarHeader = () => {
               if (newMode) dispatch(setViewMode(newMode));
             }}
             size="small"
+            color="primary" // Makes the active state use your main theme color
           >
-            <ToggleButton value="month" aria-label="month view">
-              <CalendarViewMonthIcon sx={{ mr: 1, fontSize: 18 }} /> Tháng
+            {/* Removed the small icons and added horizontal padding (px) for a wider, cleaner click area */}
+            <ToggleButton value="month" sx={{ px: 3, fontWeight: "bold" }}>
+              Tháng
             </ToggleButton>
-            <ToggleButton value="year" aria-label="year view">
-              <CalendarMonthIcon sx={{ mr: 1, fontSize: 18 }} /> Năm
+            <ToggleButton value="year" sx={{ px: 3, fontWeight: "bold" }}>
+              Năm
             </ToggleButton>
           </ToggleButtonGroup>
         </Box>
