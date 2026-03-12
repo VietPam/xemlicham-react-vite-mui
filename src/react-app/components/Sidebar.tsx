@@ -12,6 +12,7 @@ import {
   Divider 
 } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import SearchIcon from "@mui/icons-material/Search"
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import SettingsIcon from "@mui/icons-material/Settings";
 
@@ -44,7 +45,14 @@ export const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle }: Sidebar
               <ListItemText primary="Lịch Của Tôi" primaryTypographyProps={{ fontWeight: "bold", color: "primary.main" }} />
             </ListItemButton>
           </ListItem>
-
+          {/* Search / Jump to Date Button */}
+          <ListItem disablePadding>
+            {/* Note: You will need to wire up an onClick event here to open your Search Dialog later! */}
+            <ListItemButton sx={{ mx: 1, borderRadius: 1, "&:hover": { backgroundColor: "#f5f7fa" } }}>
+              <ListItemIcon><SearchIcon /></ListItemIcon>
+              <ListItemText primary="Tìm Ngày" />
+            </ListItemButton>
+          </ListItem>
           <ListItem disablePadding>
             <ListItemButton sx={{ mx: 1, borderRadius: 1, "&:hover": { backgroundColor: "#f5f7fa" } }}>
               <ListItemIcon><EventNoteIcon /></ListItemIcon>
