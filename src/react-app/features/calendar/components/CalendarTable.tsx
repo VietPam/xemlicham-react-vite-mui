@@ -39,7 +39,19 @@ export const CalendarTable = () => {
 
   return (
     <>
-      <Paper elevation={0} sx={{ border: "1px solid #e0e0e0", borderRadius: 2, overflow: 'hidden', maxWidth: 1000, margin: "0 auto", mt: 4, p: 2 }}>
+      {/* Change p: 2 to p: { xs: 1, sm: 2 } and adjust border radius */}
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          border: { xs: "none", sm: "1px solid #e0e0e0" }, // Remove border on mobile 
+          borderRadius: { xs: 0, sm: 2 }, // Square edges on mobile
+          overflow: 'hidden', 
+          maxWidth: 1000, 
+          margin: "0 auto", 
+          mt: { xs: 0, sm: 4 }, // Remove top margin on mobile
+          p: { xs: 1, sm: 2 }   // Smaller padding on mobile
+        }}
+      >
         <CalendarHeader />
         
         {/* CONDITIONAL RENDER: YEAR VIEW */}
