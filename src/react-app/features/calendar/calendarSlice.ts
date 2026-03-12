@@ -1,3 +1,4 @@
+// src/react-app/features/calendar/calendarSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 
@@ -5,21 +6,21 @@ interface CalendarState {
   month: number;
   year: number;
   selectedDate: string | null;
-  viewMode: "month" | "year"; // <-- Add this
+  viewMode: "month" | "year";
 }
 
 const initialState: CalendarState = {
   month: dayjs().month() + 1,
   year: dayjs().year(),
   selectedDate: dayjs().format("YYYY-MM-DD"),
-  viewMode: "month", // <-- Default to month view
+  viewMode: "month",
 };
 
 export const calendarSlice = createSlice({
   name: "calendar",
   initialState,
   reducers: {
-    next: (state) => { // Rename to a generic 'next'
+    next: (state) => {
       if (state.viewMode === "year") {
         state.year += 1;
       } else {
@@ -27,7 +28,7 @@ export const calendarSlice = createSlice({
         else { state.month += 1; }
       }
     },
-    prev: (state) => { // Rename to a generic 'prev'
+    prev: (state) => {
       if (state.viewMode === "year") {
         state.year -= 1;
       } else {
@@ -43,10 +44,16 @@ export const calendarSlice = createSlice({
     },
     jumpToMonth: (state, action: PayloadAction<number>) => {
       state.month = action.payload;
-      state.viewMode = "month"; // Auto-switch back to month view
+      state.viewMode = "month";
+    },
+    // ---> ADD THIS NEW REDUCER <---
+    jumpToDate: (state, action: PayloadAction<{ month: number; year: number }>) => {
+      state.month = action.payload.month;
+      state.year = action.payload.year;
+      state.viewMode = "month"; 
     }
   },
 });
 
-export const { next, prev, setSelectedDate, setViewMode, jumpToMonth } = calendarSlice.actions;
+export const { next, prev, setSelectedDate, setViewMode, jumpToMonth, jumpToDate } = calendarSlice.actions;
 export default calendarSlice.reducer;
