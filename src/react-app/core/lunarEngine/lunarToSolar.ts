@@ -8,22 +8,28 @@ export const convertLunarToSolar = (
   lunarYear: number, 
   isLeapMonth: boolean = false
 ) => {
-  // Rough guess: the solar date is usually 1 to 2 months ahead of the lunar date
+  // 1. Create a rough baseline. 
+  // A Lunar year is ~354 days, Solar is ~365. 
+  // Treating a Lunar date as a Solar date puts us about ~20-50 days behind.
+  // We add 30 days to center our guess.
   const guessJd = getJulianDayNumber(lunarDay, lunarMonth, lunarYear) + 30;
   
-  // Search a 60-day window around our guess to find the exact match
-  for (let i = -30; i < 60; i++) {
-     const testDate = jdToDate(guessJd + i);
-     const testLunar = convertSolarToLunar(testDate.day, testDate.month, testDate.year);
-     
-     if (
-         testLunar.day === lunarDay && 
-         testLunar.month === lunarMonth && 
-         testLunar.year === lunarYear && 
-         testLunar.isLeap === isLeapMonth
-     ) {
-         return testDate; // Returns { day, month, year }
-     }
+  // 2. Search a safe 100-day window (-50 to +50 days from our guess).
+  for (let i = -50; i <= 50; i++) {
+      const testDate = jdToDate(guessJd + i);
+      const testLunar = convertSolarToLunar(testDate.day, testDate.month, testDate.year);
+      
+      // 3. If the converted solar date matches our target lunar date, we found the exact match!
+      if (
+          testLunar.day === lunarDay && 
+          testLunar.month === lunarMonth && 
+          testLunar.year === lunarYear && 
+          testLunar.isLeap === isLeapMonth
+      ) {
+          return testDate; // Returns { day, month, year }
+      }
   }
+  
+  // 4. Returns null if the user typed an invalid lunar date (e.g., Feb 30th)
   return null; 
 };

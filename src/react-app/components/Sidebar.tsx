@@ -15,6 +15,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SearchIcon from "@mui/icons-material/Search"
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { useAppDispatch } from "@/app/hooks";
+import { openSearchDialog } from "@/features/calendar/calendarSlice";
 
 interface SidebarProps {
   drawerWidth: number;
@@ -23,6 +25,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle }: SidebarProps) => {
+  const dispatch = useAppDispatch();
   // We put the contents in a variable so we don't write it twice!
   const drawerContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -46,9 +49,15 @@ export const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle }: Sidebar
             </ListItemButton>
           </ListItem>
           {/* Search / Jump to Date Button */}
+          {/* Search / Jump to Date Button */}
           <ListItem disablePadding>
-            {/* Note: You will need to wire up an onClick event here to open your Search Dialog later! */}
-            <ListItemButton sx={{ mx: 1, borderRadius: 1, "&:hover": { backgroundColor: "#f5f7fa" } }}>
+            <ListItemButton 
+              onClick={() => {
+                dispatch(openSearchDialog());
+                if (mobileOpen) handleDrawerToggle(); // Closes sidebar on mobile after clicking
+              }}
+              sx={{ mx: 1, borderRadius: 1, "&:hover": { backgroundColor: "#f5f7fa" } }}
+            >
               <ListItemIcon><SearchIcon /></ListItemIcon>
               <ListItemText primary="Tìm Ngày" />
             </ListItemButton>

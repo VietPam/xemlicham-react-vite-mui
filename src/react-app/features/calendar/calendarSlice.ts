@@ -7,6 +7,7 @@ interface CalendarState {
   year: number;
   selectedDate: string | null;
   viewMode: "month" | "year";
+  isSearchDialogOpen: boolean;
 }
 
 const initialState: CalendarState = {
@@ -14,6 +15,7 @@ const initialState: CalendarState = {
   year: dayjs().year(),
   selectedDate: dayjs().format("YYYY-MM-DD"),
   viewMode: "month",
+  isSearchDialogOpen: false,
 };
 
 export const calendarSlice = createSlice({
@@ -50,10 +52,15 @@ export const calendarSlice = createSlice({
     jumpToDate: (state, action: PayloadAction<{ month: number; year: number }>) => {
       state.month = action.payload.month;
       state.year = action.payload.year;
-      state.viewMode = "month"; 
-    }
+    },
+    openSearchDialog: (state) => {
+      state.isSearchDialogOpen = true;
+    },
+    closeSearchDialog: (state) => {
+      state.isSearchDialogOpen = false;
+    },
   },
 });
 
-export const { next, prev, setSelectedDate, setViewMode, jumpToMonth, jumpToDate } = calendarSlice.actions;
+export const { next, prev, setSelectedDate, setViewMode, jumpToMonth, openSearchDialog, closeSearchDialog, jumpToDate } = calendarSlice.actions;
 export default calendarSlice.reducer;
