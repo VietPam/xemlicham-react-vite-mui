@@ -8,10 +8,14 @@ import { MiniMonth } from "./MiniMonth"; // <-- Import MiniMonth
 import { EventDialog } from "@/features/events/components/EventDialog";
 import { EventDrawer } from "@/features/events/components/EventDrawer";
 import { convertSolarToLunar, LunarDate } from "@/core/lunarEngine/solarToLunar";
+import { clearSelectedDate } from "@/features/calendar/calendarSlice";
+import { useAppDispatch } from "@/app/hooks";
+
 
 const DAYS_OF_WEEK = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
 export const CalendarTable = () => {
+   const dispatch = useAppDispatch();
   const { month, year, viewMode, selectedDate } = useAppSelector((state) => state.calendar); // <-- Pull viewMode
   const { events } = useAppSelector((state) => state.events);
 
@@ -99,9 +103,15 @@ export const CalendarTable = () => {
                   day={day} 
                   lunarDate={lunarDate} 
                   isToday={isToday} 
-                  isSelected={isSelected} // <-- 3. Pass it to the cell!
+                  isSelected={isSelected} 
                   dayEvents={dayEvents} 
-                  onClick={() => day ? handleCellClick(day, lunarDate) : undefined} 
+                  onClick={() => {
+                    if (day) handleCellClick(day, lunarDate);
+                    // Optional: If they click directly ON the cell, also clear the highlight
+                    if (isSelected) dispatch(clearSelectedDate()); 
+                  }} 
+                  // 2. Pass the clear function!
+                  onClearSelection={() => dispatch(clearSelectedDate())}
                 />
               </Grid>
             );

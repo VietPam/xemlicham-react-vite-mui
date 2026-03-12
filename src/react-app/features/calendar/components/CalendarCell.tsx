@@ -1,19 +1,22 @@
 // src/react-app/features/calendar/components/CalendarCell.tsx
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Tooltip, ClickAwayListener } from "@mui/material";
 import { LunarDate } from "@/core/lunarEngine/solarToLunar";
 import { LunarEvent } from "@/features/events/eventSlice";
-// src/react-app/features/calendar/components/CalendarCell.tsx
-// 1. Add isSelected to the props interface
+// 2. Add onClearSelection to your props interface
 interface CalendarCellProps {
   day: number | null;
   lunarDate?: LunarDate | null;
   isToday?: boolean;
-  isSelected?: boolean; // <-- Add this
+  isSelected?: boolean;
   dayEvents?: LunarEvent[];
   onClick?: () => void;
+  onClearSelection?: () => void; // <-- Add this new prop
 }
 
-export const CalendarCell = ({ day, lunarDate, isToday, isSelected, dayEvents = [], onClick }: CalendarCellProps) => {
+export const CalendarCell = ({ 
+  day, lunarDate, isToday, isSelected, dayEvents = [], onClick, onClearSelection 
+}: CalendarCellProps) => {
+  
   if (!day) {
     return <Box sx={{ p: 2, border: "1px solid #eeeeee", backgroundColor: "#fafafa" }} />;
   }
@@ -22,7 +25,8 @@ export const CalendarCell = ({ day, lunarDate, isToday, isSelected, dayEvents = 
     ? (lunarDate.day === 1 ? `${lunarDate.day}/${lunarDate.month}` : `${lunarDate.day}`)
     : "--";
 
-  return (
+  // 3. Extract the inner cell content so we can wrap it cleanly
+  const cellContent = (
     <Box
       onClick={onClick}
       sx={{
@@ -32,9 +36,7 @@ export const CalendarCell = ({ day, lunarDate, isToday, isSelected, dayEvents = 
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        // 2. Change the background if it is selected!
         backgroundColor: isSelected ? "#e3f2fd" : (isToday ? "#fff5f5" : "white"),
-        // 3. Add a highlight ring if selected
         boxShadow: isSelected ? "inset 0 0 0 2px #1976d2" : "none",
         cursor: "pointer",
         position: "relative",
@@ -44,12 +46,10 @@ export const CalendarCell = ({ day, lunarDate, isToday, isSelected, dayEvents = 
       }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-        {/* We make the text primary blue if it is selected */}
         <Typography variant="body1" fontWeight={isToday || isSelected ? "bold" : "medium"} color={isSelected ? "primary.main" : (isToday ? "error.main" : "text.primary")}>
           {day}
         </Typography>
 
-        {/* Event Indicators */}
         {dayEvents.length > 0 && (
           <Box display="flex" gap={0.5}>
             {dayEvents.slice(0, 3).map((_, i) => (
@@ -59,7 +59,6 @@ export const CalendarCell = ({ day, lunarDate, isToday, isSelected, dayEvents = 
         )}
       </Box>
 
-      {/* Lunar Date */}
       <Typography 
         variant="caption" 
         color={isSelected ? "primary.main" : (isToday ? "error.main" : "text.secondary")}
@@ -69,4 +68,29 @@ export const CalendarCell = ({ day, lunarDate, isToday, isSelected, dayEvents = 
       </Typography>
     </Box>
   );
+
+  // 4. Wrap with ClickAwayListener and Tooltip ONLY if it is selected
+  if (isSelected) {
+    return (
+      <ClickAwayListener onClickAway={() => onClearSelection && onClearSelection()}>
+        <Box> {/* Extra Box needed so Tooltip and ClickAwayListener don't fight over refs */}
+          <Tooltip 
+            open={true} // Forces it to stay open as long as it's selected
+            title="Ngày bạn tìm" 
+            placement="top" 
+            arrow
+            slotProps={{
+              tooltip: { sx: { bgcolor: "primary.main", fontSize: "13px", fontWeight: "bold", py: 1, px: 2 } },
+              arrow: { sx: { color: "primary.main" } }
+            }}
+          >
+            {cellContent}
+          </Tooltip>
+        </Box>
+      </ClickAwayListener>
+    );
+  }
+
+  // If not selected, just render the cell normally
+  return cellContent;
 };

@@ -70,8 +70,11 @@ export const calendarSlice = createSlice({
     closeSearchDialog: (state) => {
       state.isSearchDialogOpen = false;
     },
+    clearSelectedDate: (state) => {
+      state.selectedDate = null; // or null, depending on how you typed it
+    }
   },
 });
 
-export const { next, prev, setSelectedDate, setViewMode, jumpToMonth, openSearchDialog, closeSearchDialog, jumpToDate } = calendarSlice.actions;
+export const { next, prev, setSelectedDate, setViewMode, jumpToMonth, openSearchDialog, closeSearchDialog, jumpToDate, clearSelectedDate } = calendarSlice.actions;
 export default calendarSlice.reducer;
