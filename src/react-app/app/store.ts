@@ -2,11 +2,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import calendarReducer from "@/features/calendar/calendarSlice";
 import eventReducer from "@/features/events/eventSlice"; // <-- Add this
-
+import themeReducer from "@/features/theme/themeSlice"; // <-- Add this
 export const store = configureStore({
   reducer: {
     calendar: calendarReducer,
     events: eventReducer, // <-- Add this
+    theme: themeReducer, // <-- Add this
   },
 });
 

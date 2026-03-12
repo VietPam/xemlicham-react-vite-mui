@@ -20,7 +20,7 @@ export const TopBar = ({ drawerWidth, handleDrawerToggle }: TopBarProps) => {
       sx={{
         width: { sm: `calc(100% - ${drawerWidth}px)` },
         ml: { sm: `${drawerWidth}px` },
-        bgcolor: "white",
+        bgcolor: "background.paper",
         borderBottom: "1px solid #e0e0e0",
         color: "text.primary"
       }}
