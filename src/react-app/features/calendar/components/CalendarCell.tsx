@@ -7,10 +7,11 @@ interface CalendarCellProps {
   day: number | null;
   lunarDate?: LunarDate | null;
   isToday?: boolean;
-  dayEvents?: LunarEvent[]; // <-- New prop
+  dayEvents?: LunarEvent[];
+  onClick?: () => void; // <-- Add onClick prop
 }
 
-export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [] }: CalendarCellProps) => {
+export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [], onClick }: CalendarCellProps) => {
   if (!day) {
     return <Box sx={{ p: 2, border: "1px solid #eeeeee", backgroundColor: "#fafafa" }} />;
   }
@@ -21,6 +22,7 @@ export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [] }: Calend
 
   return (
     <Box
+      onClick={onClick} // <-- Attach onClick to the root Box
       sx={{
         p: 1,
         height: 85,
@@ -33,6 +35,7 @@ export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [] }: Calend
         position: "relative",
         transition: "all 0.2s ease-in-out",
         "&:hover": { backgroundColor: "#fafafa", boxShadow: "inset 0 0 0 1px #d32f2f" },
+        "&:active": { transform: "scale(0.98)" } // <-- Add a tiny click animation
       }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="flex-start">
@@ -40,7 +43,7 @@ export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [] }: Calend
           {day}
         </Typography>
 
-        {/* Event Indicators (Little dots in the top right) */}
+        {/* Event Indicators */}
         {dayEvents.length > 0 && (
           <Box display="flex" gap={0.5}>
             {dayEvents.slice(0, 3).map((_, i) => (
@@ -50,7 +53,7 @@ export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [] }: Calend
         )}
       </Box>
 
-      {/* Lunar Date (Bottom Right) */}
+      {/* Lunar Date */}
       <Typography 
         variant="caption" 
         color={isToday ? "primary.main" : "text.secondary"}
