@@ -1,5 +1,5 @@
 // src/react-app/core/lunarEngine/solarToLunar.ts
-import { getJulianDayNumber, jdToDate } from "./julianDay";
+import { getJulianDayNumber } from "./julianDay";
 
 export interface LunarDate {
   day: number;
@@ -61,7 +61,6 @@ const getLeapMonthOffset = (a11: number, timeZone: number): number => {
   let k = Math.floor((a11 - 2415021.076998695) / 29.530588853) + 1;
   let last = 0;
   let i = 1;
-  let arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
   
   while (i < 14) {
     const newArc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
