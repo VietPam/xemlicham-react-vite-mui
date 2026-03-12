@@ -6,6 +6,7 @@ import { useAppSelector } from "@/app/hooks";
 import { CalendarHeader } from "./CalendarHeader";
 import { CalendarCell } from "./CalendarCell";
 import { EventDialog } from "@/features/events/components/EventDialog";
+import { EventDrawer } from "@/features/events/components/EventDrawer"; // <-- Import the new Drawer
 import { convertSolarToLunar, LunarDate } from "@/core/lunarEngine/solarToLunar";
 
 const DAYS_OF_WEEK = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
@@ -14,19 +15,23 @@ export const CalendarTable = () => {
   const { month, year } = useAppSelector((state) => state.calendar);
   const { events } = useAppSelector((state) => state.events);
 
-  // --- Dialog State ---
-  const [dialogOpen, setDialogOpen] = useState(false);
+  // --- UI State Management ---
+  const [drawerOpen, setDrawerOpen] = useState(false); // Controls the Sidebar
+  const [dialogOpen, setDialogOpen] = useState(false); // Controls the Add Event Form
+  
+  // --- Selected Date Data ---
   const [selectedSolarDay, setSelectedSolarDay] = useState<number | null>(null);
   const [selectedLunar, setSelectedLunar] = useState<LunarDate | null>(null);
 
+  // Clicking a cell now opens the DRAWER, not the Dialog
   const handleCellClick = (day: number, lunarDate: LunarDate | null) => {
     if (day && lunarDate) {
       setSelectedSolarDay(day);
       setSelectedLunar(lunarDate);
-      setDialogOpen(true);
+      setDrawerOpen(true);
     }
   };
-  // --------------------
+  // ---------------------------
 
   const startOfMonth = dayjs(`${year}-${month}-01`);
   const daysInMonth = startOfMonth.daysInMonth();
@@ -80,7 +85,18 @@ export const CalendarTable = () => {
         </Grid>
       </Paper>
 
-      {/* Render the Dialog outside the Paper but inside the component */}
+      {/* The Sidebar Drawer */}
+      <EventDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onOpenDialog={() => setDialogOpen(true)} // Drawer triggers the Dialog
+        selectedLunar={selectedLunar}
+        selectedSolarDay={selectedSolarDay}
+        month={month}
+        year={year}
+      />
+
+      {/* The Add Event Form */}
       <EventDialog 
         open={dialogOpen} 
         onClose={() => setDialogOpen(false)} 
