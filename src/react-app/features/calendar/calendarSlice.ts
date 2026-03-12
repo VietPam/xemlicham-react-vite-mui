@@ -49,9 +49,20 @@ export const calendarSlice = createSlice({
       state.viewMode = "month";
     },
     // ---> ADD THIS NEW REDUCER <---
-    jumpToDate: (state, action: PayloadAction<{ month: number; year: number }>) => {
-      state.month = action.payload.month;
-      state.year = action.payload.year;
+    jumpToDate: (state, action: PayloadAction<{ day: number; month: number; year: number }>) => {
+      const { day, month, year } = action.payload;
+      
+      // 1. Jump to the correct month/year
+      state.month = month;
+      state.year = year;
+      
+      // 2. Force the view into 'month' mode so the user actually sees the grid
+      state.viewMode = "month"; 
+      
+      // 3. Set the selected date (formatting it as YYYY-MM-DD to match standard formats)
+      const formattedMonth = String(month).padStart(2, '0');
+      const formattedDay = String(day).padStart(2, '0');
+      state.selectedDate = `${year}-${formattedMonth}-${formattedDay}`;
     },
     openSearchDialog: (state) => {
       state.isSearchDialogOpen = true;

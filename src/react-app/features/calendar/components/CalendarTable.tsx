@@ -12,7 +12,7 @@ import { convertSolarToLunar, LunarDate } from "@/core/lunarEngine/solarToLunar"
 const DAYS_OF_WEEK = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
 export const CalendarTable = () => {
-  const { month, year, viewMode } = useAppSelector((state) => state.calendar); // <-- Pull viewMode
+  const { month, year, viewMode, selectedDate } = useAppSelector((state) => state.calendar); // <-- Pull viewMode
   const { events } = useAppSelector((state) => state.events);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -80,18 +80,32 @@ export const CalendarTable = () => {
 
             <Grid container>
               {daysArray.map((day, index) => {
-                const isToday = day === today.date() && month === today.month() + 1 && year === today.year();
-                const lunarDate = day ? convertSolarToLunar(day, month, year) : null;
-                const dayEvents = lunarDate ? events.filter(e => 
-                  e.lunarDay === lunarDate.day && e.lunarMonth === lunarDate.month && (e.repeatYearly || e.lunarYear === lunarDate.year)
-                ) : [];
+            const isToday = day === today.date() && month === today.month() + 1 && year === today.year();
+            
+            // 2. Check if this specific day is the selectedDate
+            const formattedMonth = String(month).padStart(2, '0');
+            const formattedDay = String(day).padStart(2, '0');
+            const currentDateString = `${year}-${formattedMonth}-${formattedDay}`;
+            const isSelected = selectedDate === currentDateString;
 
-                return (
-                  <Grid size={12 / 7} key={index}>
-                    <CalendarCell day={day} lunarDate={lunarDate} isToday={isToday} dayEvents={dayEvents} onClick={() => day ? handleCellClick(day, lunarDate) : undefined} />
-                  </Grid>
-                );
-              })}
+            const lunarDate = day ? convertSolarToLunar(day, month, year) : null;
+            const dayEvents = lunarDate ? events.filter(e => 
+              e.lunarDay === lunarDate.day && e.lunarMonth === lunarDate.month && (e.repeatYearly || e.lunarYear === lunarDate.year)
+            ) : [];
+
+            return (
+              <Grid size={12 / 7} key={index}>
+                <CalendarCell 
+                  day={day} 
+                  lunarDate={lunarDate} 
+                  isToday={isToday} 
+                  isSelected={isSelected} // <-- 3. Pass it to the cell!
+                  dayEvents={dayEvents} 
+                  onClick={() => day ? handleCellClick(day, lunarDate) : undefined} 
+                />
+              </Grid>
+            );
+          })}
             </Grid>
           </Box>
         )}

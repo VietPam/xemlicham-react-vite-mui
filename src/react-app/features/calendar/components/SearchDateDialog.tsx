@@ -31,23 +31,22 @@ export const SearchDateDialog = () => {
 
     if (!m || !y) return; // Basic validation
 
+    // Default to day 1 if the user leaves the day input blank
+    const targetDay = d || 1;
+
     if (tabValue === 0) {
-      // DƯƠNG LỊCH (Solar) Search
-      // Just jump directly to the entered month and year
-      dispatch(jumpToDate({ month: m, year: y }));
+      // DƯƠNG LỊCH (Solar)
+      dispatch(jumpToDate({ day: targetDay, month: m, year: y }));
     } else {
-     // ÂM LỊCH (Lunar)
-      // d defaults to 1 if user leaves it blank
-      const targetDay = d || 1; 
-      
-      // Use the engine to find the Solar equivalent!
+      // ÂM LỊCH (Lunar)
       const solarDate = convertLunarToSolar(targetDay, m, y, false); 
       
       if (solarDate) {
-        dispatch(jumpToDate({ month: solarDate.month, year: solarDate.year }));
+        // Pass the exact converted Solar day/month/year
+        dispatch(jumpToDate({ day: solarDate.day, month: solarDate.month, year: solarDate.year }));
       } else {
         alert("Ngày âm lịch không hợp lệ!");
-        return; // don't close dialog if invalid
+        return; 
       }
     }
 

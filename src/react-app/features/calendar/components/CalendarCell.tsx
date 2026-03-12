@@ -2,16 +2,18 @@
 import { Box, Typography } from "@mui/material";
 import { LunarDate } from "@/core/lunarEngine/solarToLunar";
 import { LunarEvent } from "@/features/events/eventSlice";
-
+// src/react-app/features/calendar/components/CalendarCell.tsx
+// 1. Add isSelected to the props interface
 interface CalendarCellProps {
   day: number | null;
   lunarDate?: LunarDate | null;
   isToday?: boolean;
+  isSelected?: boolean; // <-- Add this
   dayEvents?: LunarEvent[];
-  onClick?: () => void; // <-- Add onClick prop
+  onClick?: () => void;
 }
 
-export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [], onClick }: CalendarCellProps) => {
+export const CalendarCell = ({ day, lunarDate, isToday, isSelected, dayEvents = [], onClick }: CalendarCellProps) => {
   if (!day) {
     return <Box sx={{ p: 2, border: "1px solid #eeeeee", backgroundColor: "#fafafa" }} />;
   }
@@ -22,7 +24,7 @@ export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [], onClick 
 
   return (
     <Box
-      onClick={onClick} // <-- Attach onClick to the root Box
+      onClick={onClick}
       sx={{
         p: 1,
         height: 85,
@@ -30,16 +32,20 @@ export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [], onClick 
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        backgroundColor: isToday ? "#fff5f5" : "white",
+        // 2. Change the background if it is selected!
+        backgroundColor: isSelected ? "#e3f2fd" : (isToday ? "#fff5f5" : "white"),
+        // 3. Add a highlight ring if selected
+        boxShadow: isSelected ? "inset 0 0 0 2px #1976d2" : "none",
         cursor: "pointer",
         position: "relative",
         transition: "all 0.2s ease-in-out",
-        "&:hover": { backgroundColor: "#fafafa", boxShadow: "inset 0 0 0 1px #d32f2f" },
-        "&:active": { transform: "scale(0.98)" } // <-- Add a tiny click animation
+        "&:hover": { backgroundColor: isSelected ? "#e3f2fd" : "#fafafa", boxShadow: "inset 0 0 0 2px #d32f2f" },
+        "&:active": { transform: "scale(0.98)" }
       }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-        <Typography variant="body1" fontWeight={isToday ? "bold" : "medium"} color={isToday ? "primary.main" : "text.primary"}>
+        {/* We make the text primary blue if it is selected */}
+        <Typography variant="body1" fontWeight={isToday || isSelected ? "bold" : "medium"} color={isSelected ? "primary.main" : (isToday ? "error.main" : "text.primary")}>
           {day}
         </Typography>
 
@@ -56,7 +62,7 @@ export const CalendarCell = ({ day, lunarDate, isToday, dayEvents = [], onClick 
       {/* Lunar Date */}
       <Typography 
         variant="caption" 
-        color={isToday ? "primary.main" : "text.secondary"}
+        color={isSelected ? "primary.main" : (isToday ? "error.main" : "text.secondary")}
         sx={{ alignSelf: "flex-end", fontWeight: lunarDate?.day === 1 ? "bold" : "normal" }}
       >
         {displayLunarText}
